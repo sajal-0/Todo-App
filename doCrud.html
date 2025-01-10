@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Todo App with Date and Time</title>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+  
+</head>
+<body>
+    <div>
+        <h1>Simple Todo App with Date and Time</h1>
+        <form>
+            <table>
+                <tr>
+                    <td> <h4>Enter the Task</h4></td>
+                    <td> <input type="text" id="inputField" placeholder="Enter task"></td>
+                </tr>
+                <tr>
+                    <td> <h4>Set Task Expiry</h4></td>
+                    <td> <input type="datetime-local" id="dateTimeField"></td>
+                </tr>
+            </table>
+        </form>
+ 
+        <button class="btn">Add Task</button>
+        <div class="todoListsElem"></div>
+    </div>
+    <script>
+        let inputElem = document.getElementById("inputField");
+        let dateTimeElem = document.getElementById("dateTimeField");
+        let clickBtn = document.querySelector(".btn");
+        let todoElem = document.querySelector(".todoListsElem");
+
+        // Set default date and time to current time
+        dateTimeElem.value = new Date().toISOString().slice(0,16);
+
+        const addTodo = () => {
+            if (inputElem.value.trim() === '' || !dateTimeElem.value) {
+                alert('Please enter both task and date/time!');
+                return;
+            }
+
+            let pElem = document.createElement("p");
+            let deadline = new Date(dateTimeElem.value);
+            pElem.textContent = `${inputElem.value} - Due: ${deadline.toLocaleString()}`;
+
+            const checkDeadline = () => {
+                let now = new Date();
+                if (now >= deadline) {
+                    pElem.classList.add('expired');
+                    // setTimeout(() => pElem.remove(), 5000); // Removes after 5 seconds
+                }
+            };
+
+            setInterval(checkDeadline, 1000);
+            todoElem.append(pElem);
+
+            inputElem.value = "";
+            dateTimeElem.value = new Date().toISOString().slice(0,16);
+        };
+
+        clickBtn.addEventListener("click", addTodo);
+
+        todoElem.addEventListener("click", (event) => {
+            let currentElem = event.target;
+            currentElem.remove();
+        });
+    </script>
+</body>
+</html>
